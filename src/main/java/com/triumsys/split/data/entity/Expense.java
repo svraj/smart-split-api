@@ -25,6 +25,17 @@ public class Expense extends BaseEntity implements Serializable {
 	@OneToOne
 	private ExpenseCategory expenseCategory;
 
+	@OneToOne
+	private Group group;
+
+	public Group getGroup() {
+		return group;
+	}
+
+	public void setGroup(Group group) {
+		this.group = group;
+	}
+
 	// @OneToMany(mappedBy = "expense", fetch = FetchType.EAGER, cascade =
 	// CascadeType.ALL)
 	@ElementCollection(fetch = FetchType.EAGER)
