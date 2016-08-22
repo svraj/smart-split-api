@@ -7,6 +7,7 @@ import com.triumsys.split.data.entity.Person;
 import com.triumsys.split.exceptions.BusinessException;
 import com.triumsys.split.services.business.dto.ExpenseSplitDto;
 import com.triumsys.split.services.business.dto.ParticipantShareDto;
+import com.triumsys.split.services.business.dto.ParticipantShareDtoShort;
 import com.triumsys.split.services.business.dto.PersonBalance;
 
 public interface SplitService {
@@ -32,5 +33,8 @@ public interface SplitService {
 	public List<PersonBalance> getPerPersonBalances(
 			List<ParticipantShareDto> participantShares)
 			throws BusinessException;
+
+	public Double getTotalSharesForShort(
+			List<ParticipantShareDtoShort> participantShares);
 
 }

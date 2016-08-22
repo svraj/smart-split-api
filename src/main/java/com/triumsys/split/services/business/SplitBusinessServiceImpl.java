@@ -16,6 +16,7 @@ import com.triumsys.split.exceptions.BusinessException;
 import com.triumsys.split.services.SplitService;
 import com.triumsys.split.services.business.dto.ExpenseSplitDto;
 import com.triumsys.split.services.business.dto.ParticipantShareDto;
+import com.triumsys.split.services.business.dto.ParticipantShareDtoShort;
 import com.triumsys.split.services.business.dto.PersonBalance;
 import com.triumsys.split.services.business.dto.SplitCalculationWithBalances;
 
@@ -101,9 +102,52 @@ public class SplitBusinessServiceImpl implements SplitBusinessService {
 		return newParticipantShares;
 	}
 
+	@Override
+	public List<ParticipantShareDtoShort> calculatePerShareAmountShort(
+			List<ParticipantShareDtoShort> participantShares) {
+		List<ParticipantShareDtoShort> newParticipantShares = null;
+		if (participantShares != null) {
+			newParticipantShares = new ArrayList<ParticipantShareDtoShort>();
+			BigDecimal newTotal = computeTotalForShort(participantShares);
+			LOGGER.info("new Total is -" + newTotal);
+			BigDecimal singleShareAmt = BigDecimal.ZERO;
+			Double totalShares = splitService
+					.getTotalSharesForShort(participantShares);
+			if (totalShares != 0) {
+				singleShareAmt = newTotal
+						.divide(new BigDecimal(totalShares), 2);
+			}
+			for (ParticipantShareDtoShort participantShareDto : participantShares) {
+				ParticipantShareDtoShort newParticipantShare = new ParticipantShareDtoShort();
+				newParticipantShare.setPerson(participantShareDto.getPerson());
+				newParticipantShare
+						.setPaidAmt(participantShareDto.getPaidAmt());
+				newParticipantShare
+						.setRemarks(participantShareDto.getRemarks());
+				newParticipantShare.setShare(participantShareDto.getShare());
+				newParticipantShare
+						.setShareAmt(singleShareAmt.multiply(new BigDecimal(
+								participantShareDto.getShare())));
+				newParticipantShares.add(newParticipantShare);
+			}
+		}
+		return newParticipantShares;
+	}
+
 	private BigDecimal computeTotal(List<ParticipantShareDto> participantShares) {
 		BigDecimal total = BigDecimal.ZERO;
 		for (ParticipantShareDto participantShare : participantShares) {
+			if (participantShare.getPaidAmt() != null) {
+				total = total.add(participantShare.getPaidAmt());
+			}
+		}
+		return total;
+	}
+
+	private BigDecimal computeTotalForShort(
+			List<ParticipantShareDtoShort> participantShares) {
+		BigDecimal total = BigDecimal.ZERO;
+		for (ParticipantShareDtoShort participantShare : participantShares) {
 			if (participantShare.getPaidAmt() != null) {
 				total = total.add(participantShare.getPaidAmt());
 			}

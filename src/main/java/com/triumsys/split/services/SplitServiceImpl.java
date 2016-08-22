@@ -18,6 +18,7 @@ import com.triumsys.split.service.comparators.CalculationObjComparator;
 import com.triumsys.split.services.business.dto.CalculationObj;
 import com.triumsys.split.services.business.dto.ExpenseSplitDto;
 import com.triumsys.split.services.business.dto.ParticipantShareDto;
+import com.triumsys.split.services.business.dto.ParticipantShareDtoShort;
 import com.triumsys.split.services.business.dto.PersonBalance;
 import com.triumsys.split.services.business.dto.PersonDto;
 import com.triumsys.split.services.constant.ServiceConstants;
@@ -201,19 +202,6 @@ public class SplitServiceImpl implements SplitService {
 	}
 
 	@Override
-	public Double getTotalShares(List<ParticipantShareDto> participantShareDtos) {
-		Double totalShares = 0d;
-		if (participantShareDtos != null) {
-			for (ParticipantShareDto participantShareDto : participantShareDtos) {
-				if (participantShareDto.getShare() != null) {
-					totalShares += participantShareDto.getShare();
-				}
-			}
-		}
-		return totalShares;
-	}
-
-	@Override
 	public List<ExpenseSplitDto> computeExpenseSplits(
 			List<PersonBalance> perPersonBalances) throws BusinessException {
 
@@ -326,6 +314,33 @@ public class SplitServiceImpl implements SplitService {
 		LOGGER.info("Transacted");
 
 		return transaction;
+	}
+
+	@Override
+	public Double getTotalShares(List<ParticipantShareDto> participantShareDtos) {
+		Double totalShares = 0d;
+		if (participantShareDtos != null) {
+			for (ParticipantShareDto participantShareDto : participantShareDtos) {
+				if (participantShareDto.getShare() != null) {
+					totalShares += participantShareDto.getShare();
+				}
+			}
+		}
+		return totalShares;
+	}
+
+	@Override
+	public Double getTotalSharesForShort(
+			List<ParticipantShareDtoShort> participantShares) {
+		Double totalShares = 0d;
+		if (participantShares != null) {
+			for (ParticipantShareDtoShort participantShareDto : participantShares) {
+				if (participantShareDto.getShare() != null) {
+					totalShares += participantShareDto.getShare();
+				}
+			}
+		}
+		return totalShares;
 	}
 
 }
