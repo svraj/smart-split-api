@@ -1,6 +1,5 @@
 package com.triumsys.split.controllers;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -14,16 +13,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.triumsys.split.data.entity.Group;
 import com.triumsys.split.data.entity.Person;
 import com.triumsys.split.data.repository.PersonGroupRepository;
-import com.triumsys.split.exceptions.BusinessException;
 import com.triumsys.split.services.business.SplitBusinessService;
-import com.triumsys.split.services.business.dto.ContributionsInfo;
 
 @RestController
 @RequestMapping("/groups")
@@ -126,26 +122,6 @@ public class GroupController {
 		LOGGER.info("Deleting all Groups");
 		repository.deleteAll();
 		return new ResponseEntity<Group>(HttpStatus.NO_CONTENT);
-	}
-
-	@RequestMapping(value = "/{id}/computeSplits", method = RequestMethod.GET)
-	public ResponseEntity<ContributionsInfo> computeDefaultSplits(
-			@RequestParam("total") BigDecimal totalAmountBigDecimal,
-			@PathVariable("id") long groupId) {
-		LOGGER.info("Going to compute default splits for totalAmount - "
-				+ totalAmountBigDecimal + " and for groupId-" + groupId);
-		ContributionsInfo defaultSplitDto = null;
-		try {
-			defaultSplitDto = splitBusinessService.computeDefaultSplits(
-					groupId, totalAmountBigDecimal);
-		} catch (BusinessException e) {
-			e.printStackTrace();
-			LOGGER.error(e.getMessage());
-			return new ResponseEntity<ContributionsInfo>(
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		return new ResponseEntity<ContributionsInfo>(defaultSplitDto,
-				HttpStatus.OK);
 	}
 
 }

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.triumsys.split.exceptions.BusinessException;
 import com.triumsys.split.services.business.SplitBusinessService;
-import com.triumsys.split.services.business.dto.ContributionsInfo;
 import com.triumsys.split.services.business.dto.ParticipantShareDto;
 import com.triumsys.split.services.business.dto.SplitCalculationWithBalances;
 
@@ -27,24 +26,6 @@ public class ExpenseSplitController {
 
 	@Autowired
 	private SplitBusinessService splitBusinessService;
-
-	@RequestMapping(value = "/adjustShareAmt", method = RequestMethod.POST)
-	public ResponseEntity<ContributionsInfo> adjustShareAmt(
-			@RequestBody ContributionsInfo contributionsInfo) {
-		LOGGER.info("Going to adjust ShareAmt - " + contributionsInfo);
-		ContributionsInfo defaultSplitDto = null;
-		try {
-			defaultSplitDto = splitBusinessService
-					.adjustShareAmounts(contributionsInfo);
-		} catch (BusinessException e) {
-			e.printStackTrace();
-			LOGGER.error(e.getMessage());
-			return new ResponseEntity<ContributionsInfo>(
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		return new ResponseEntity<ContributionsInfo>(defaultSplitDto,
-				HttpStatus.OK);
-	}
 
 	@RequestMapping(value = "/calculatePerShareAmount", method = RequestMethod.POST)
 	public ResponseEntity<List<ParticipantShareDto>> calculatePerShareAmount(
@@ -62,30 +43,6 @@ public class ExpenseSplitController {
 		}
 		return new ResponseEntity<List<ParticipantShareDto>>(
 				newParticipantShares, HttpStatus.OK);
-	}
-
-	@RequestMapping(value = "/split", method = RequestMethod.POST)
-	public ResponseEntity<SplitCalculationWithBalances> doSplitCalculation(
-			@RequestBody ContributionsInfo contributionsInfo) {
-		LOGGER.info("Going to do split calculation for totalAmount : "
-				+ contributionsInfo.getTotalAmount());
-
-		SplitCalculationWithBalances splitCalculationWithBalances = null;
-		try {
-			splitCalculationWithBalances = splitBusinessService
-					.doSplitCalculation(contributionsInfo);
-			LOGGER.info("SplitCalculationWithBalances-"
-					+ splitCalculationWithBalances);
-		} catch (BusinessException e) {
-			e.printStackTrace();
-			LOGGER.error(e.getMessage());
-			return new ResponseEntity<SplitCalculationWithBalances>(
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-		return new ResponseEntity<SplitCalculationWithBalances>(
-				splitCalculationWithBalances, HttpStatus.OK);
-
 	}
 
 	@RequestMapping(value = "/smart-split", method = RequestMethod.POST)
