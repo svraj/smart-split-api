@@ -4,7 +4,7 @@
 package com.triumsys.split.data.enums;
 
 /**
- * @author Aroma
+ * @author Sajan
  *
  */
 public enum RecordStatus {
